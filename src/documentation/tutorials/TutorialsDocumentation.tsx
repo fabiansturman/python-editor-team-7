@@ -201,6 +201,6 @@ const ActiveLevel = ({
       </Text>
     </HeadedScrollablePanel>
   );
-};
+}; 
 
 export default TutorialsDocumentation;

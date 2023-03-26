@@ -23,6 +23,10 @@
     "defaultMessage": "深入瞭解 MicroPython",
     "description": "Aria label to expand a collapsed section about MicroPython"
   },
+  "about-tutorials": {
+    "defaultMessage": "<link>About tutorials</link>",
+    "description": "Link to info about tutorials (currently goes to google) at the end of the tutorials section"
+  },
   "added-change": {
     "defaultMessage": "已新增檔案 {changeName}",
     "description": "Change made to file"
@@ -1073,6 +1077,14 @@
   "try-again-action": {
     "defaultMessage": "重試一次",
     "description": "Try again button text"
+  },
+  "tutorials-tab": {
+    "defaultMessage": "Tutorials",
+    "description": "Title for tutorials tab"
+  },
+  "tutorials-tab-description": {
+    "defaultMessage": "Check out these tutorials and get started with some cool projects!",
+    "description": "Subheading for tutorials tab"
   },
   "undo": {
     "defaultMessage": "復原",

@@ -59,6 +59,18 @@
       "value": "MicroPython 세부 정보 표시하기"
     }
   ],
+  "about-tutorials": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "About tutorials"
+        }
+      ],
+      "type": 8,
+      "value": "link"
+    }
+  ],
   "added-change": [
     {
       "type": 1,
@@ -2329,6 +2341,18 @@
     {
       "type": 0,
       "value": "다시 시도"
+    }
+  ],
+  "tutorials-tab": [
+    {
+      "type": 0,
+      "value": "Tutorials"
+    }
+  ],
+  "tutorials-tab-description": [
+    {
+      "type": 0,
+      "value": "Check out these tutorials and get started with some cool projects!"
     }
   ],
   "undo": [

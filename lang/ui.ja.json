@@ -23,6 +23,10 @@
     "defaultMessage": "MicroPythonについてもっと読む",
     "description": "Aria label to expand a collapsed section about MicroPython"
   },
+  "about-tutorials": {
+    "defaultMessage": "<link>About tutorials</link>",
+    "description": "Link to info about tutorials (currently goes to google) at the end of the tutorials section"
+  },
   "added-change": {
     "defaultMessage": "ファイル {changeName} を追加しました",
     "description": "Change made to file"
@@ -1073,6 +1077,14 @@
   "try-again-action": {
     "defaultMessage": "もう一度やり直す",
     "description": "Try again button text"
+  },
+  "tutorials-tab": {
+    "defaultMessage": "Tutorials",
+    "description": "Title for tutorials tab"
+  },
+  "tutorials-tab-description": {
+    "defaultMessage": "Check out these tutorials and get started with some cool projects!",
+    "description": "Subheading for tutorials tab"
   },
   "undo": {
     "defaultMessage": "元に戻す",

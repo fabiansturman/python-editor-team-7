@@ -59,6 +59,18 @@
       "value": "MicroPythonについてもっと読む"
     }
   ],
+  "about-tutorials": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "About tutorials"
+        }
+      ],
+      "type": 8,
+      "value": "link"
+    }
+  ],
   "added-change": [
     {
       "type": 0,
@@ -2323,6 +2335,18 @@
     {
       "type": 0,
       "value": "もう一度やり直す"
+    }
+  ],
+  "tutorials-tab": [
+    {
+      "type": 0,
+      "value": "Tutorials"
+    }
+  ],
+  "tutorials-tab-description": [
+    {
+      "type": 0,
+      "value": "Check out these tutorials and get started with some cool projects!"
     }
   ],
   "undo": [

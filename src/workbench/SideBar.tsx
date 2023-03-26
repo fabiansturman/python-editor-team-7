@@ -23,6 +23,7 @@ import ErrorBoundary from "../common/ErrorBoundary";
 import PythonLogo from "../common/PythonLogo";
 import ApiArea from "../documentation/ApiArea";
 import IdeasArea from "../documentation/IdeasArea";
+import TutorialsArea from "../documentation/TutorialsArea";
 import ReferenceArea from "../documentation/ReferenceArea";
 import { flags } from "../flags";
 import ProjectArea from "../project/ProjectArea";
@@ -86,6 +87,13 @@ const SideBar = ({
         title: intl.formatMessage({ id: "ideas-tab" }),
         icon: RiLightbulbFlashLine,
         contents: <IdeasArea />,
+        color: "gray.25",
+      },      
+      {
+        id: "tutorials" as const,
+        title:"Tutorials",
+        icon: RiLightbulbFlashLine,
+        contents: <TutorialsArea />,
         color: "gray.25",
       },
       {

@@ -4,7 +4,7 @@
 
 export interface PortableTextBlock {
   _type: "block";
-  _key: string;
+  _key: string; 
   // Partial/lax modelling. We pass this straight to Sanity's rendering API.
   children: any;
   markDefs: any;

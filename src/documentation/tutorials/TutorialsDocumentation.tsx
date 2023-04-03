@@ -24,6 +24,8 @@ import { isV2Only } from "../common/model";
 import TutorialCard from "./TutorialCard";
 import { Tutorial } from "./model";
 import DocumentationHeading from "../common/DocumentationHeading";
+import {ReactComponent as addNew} from "../add-new.svg";
+
 
 interface TutorialsDocumentationProps {
     tutorials: Tutorial[];
@@ -181,6 +183,13 @@ const ActiveLevel = ({
             onClick={() => onNavigate(tutorial.slug.current)}
           />
         ))}
+        <TutorialCard
+            key={"Create new tutorial"}
+            name={"Create new tutorial"}
+            isV2Only={false}
+            image={{ _type: "simpleImage", asset: "image-09a0de4a9ed72dc1c1cee28e4981672e24bafdff-800x400-png" }}
+            onClick={() => onNavigate("create-new-tutorial")}
+          />
       </SimpleGrid>
       <Text pb={8} px={5}>
         <FormattedMessage

@@ -7,7 +7,9 @@
  */
 import { fetchContent } from "../../common/sanity";
 import { Tutorial } from "./model";
-import { Container, Box } from '@chakra-ui/react';
+import { Editable, EditableInput, EditableTextarea, EditablePreview, Container, Box } from '@chakra-ui/react';
+import "./styles.css";
+import Editor from "./Editor";
 
 export const generateTestTutorials = (languageId: string): Tutorial[] =>
   {
@@ -149,5 +151,27 @@ export const generateTestTutorials = (languageId: string): Tutorial[] =>
       compatibility: ["microbitV1", "microbitV2"],
     };
 
-    return [tute1a, tute1b, tute1c, tute2a, tute2b]; //add tute 2 to this array once I have one tute showing
+    const newTute: Tutorial = {
+      _id: "new1",
+      name: "New tutorial",
+      icon: { _type: "simpleImage", asset: "image-5dd9b5a5f02940ee7f8e21d25b9b51516ae09ec8-800x399-png" },
+      author: "Hoa",
+
+      stepTitle: "New tutorial step",
+      content:          <div className="App">
+      <Editor />
+    </div>,
+      
+      hasHint: false,
+      language: "en",
+      slug: { _type: "slug", current: "create-new-1" },
+      
+      hasNextSection: false,
+      hasPrevSection: false,
+      
+      compatibility: ["microbitV1", "microbitV2"],
+    };
+
+
+    return [tute1a, tute1b, tute1c, tute2a, tute2b, newTute]; //add tute 2 to this array once I have one tute showing
   }

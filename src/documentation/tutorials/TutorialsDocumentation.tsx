@@ -66,6 +66,8 @@ interface ActiveLevelProps extends TutorialsDocumentationProps {
   direction: "forward" | "back" | "none";
 }
 
+export var active: Tutorial | undefined;
+
 const ActiveLevel = ({
   tutorialId,
   onNavigate,
@@ -79,6 +81,7 @@ const ActiveLevel = ({
     //We only show starterTutorials in the menu
 
   const activeTutorial = tutorials.find((tutorial) => tutorial.slug.current === tutorialId); //finds a tutorial whose slug matches our tutorialID variable
+  active = activeTutorial;
   const intl = useIntl();
   const headingString = intl.formatMessage({ id: "tutorials-tab" });
   const ref = useRef<HTMLDivElement>(null);

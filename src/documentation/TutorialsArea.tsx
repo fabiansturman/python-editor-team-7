@@ -16,9 +16,8 @@ import { generateTutorials } from "./tutorials/TutorialsDocumentation";
 import { generateTestTutorials } from "./tutorials/content";
 import { useState } from 'react';
 
-
 const TutorialsArea = () => {
-  const tutorials = generateTestTutorials("en").concat(generateTutorials);
+  const [tutorials, setTutorials] = useState(generateTestTutorials("en").concat(generateTutorials));
   return <TutorialsDocumentation tutorials = {tutorials}/>
 };
 

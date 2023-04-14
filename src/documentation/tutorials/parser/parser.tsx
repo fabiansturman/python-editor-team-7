@@ -2,7 +2,6 @@
 
 import { integer } from "vscode-languageserver-protocol";
 import { Tutorial } from "../model"
-import { Box, Container } from "@chakra-ui/react";
 
 export class Parser {
 
@@ -21,11 +20,7 @@ export class Parser {
                     this.#steps[stepIndex].stepTitle = propertyValue;
                     break;
                 case "Contents":
-                    this.#steps[stepIndex].content = <Container maxW='2xl' bg='red.100' centerContent>
-                        <Box padding='4' bg='blue.400' color='black' maxW='md'>
-                            {propertyValue}
-                        </Box>
-                    </Container>;
+                    this.#steps[stepIndex].content = propertyValue;
                     break;
                 case "TutorialName":
                     this.#steps[stepIndex].name = propertyValue;
@@ -168,7 +163,7 @@ export class Parser {
                         author: this.#tutorialAuthor,
 
                         stepTitle: "nil",
-                        content: <Container maxW='2xl' bg='red.100' centerContent></Container>,
+                        content: "",
                         hasHint: false,
                         hint: "nil",
 

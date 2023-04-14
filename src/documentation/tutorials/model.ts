@@ -8,7 +8,6 @@
 
 import { PortableText, SimpleImage, Slug } from "../../common/sanity";
 import { HasCompatibility } from "../common/model";
-import {ReactElement} from 'react';
 
 
 //Each step of a tutorial is an instance of Tutorial, and an entire tutorial a linked list of 'Tutorial's
@@ -21,7 +20,7 @@ export interface Tutorial extends HasCompatibility {
   author: string;
 
   stepTitle: string;//this is the name of the specific tutorial step we are currently on
-  content: ReactElement;//the core content of this tutorial step
+  content: string;//the core content of this tutorial step
   hasHint: boolean;//inv: 'hint' is undefined iff !hasHint
   hint? : string;//optional hint for this step of the tutorial
 

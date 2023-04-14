@@ -24,6 +24,7 @@ import DocumentationContent, {
 import { isV2Only } from "../common/model";
 import TutorialCard from "./TutorialCard";
 import Editor from "./Editor";
+import { startContent } from "./Editor";
 import { Tutorial } from "./model";
 import DocumentationHeading from "../common/DocumentationHeading";
 import {ReactComponent as addNew} from "../add-new.svg";
@@ -91,6 +92,7 @@ const ActiveLevel = ({
     var back = "Back";
     var next = "Next";
     var edit = "Edit";
+    startContent(activeTutorial);
 
     return (
       <HeadedScrollablePanel
@@ -229,15 +231,13 @@ const ActiveLevel = ({
         onChange={e => setName(e.target.value)}
       />
       <button onClick={() => {
-        const t: Tutorial = { _id: name.replace(" ", "-") + "1",
+        const t: Tutorial = { _id: name.replace(" ", "-") + "-1",
         name: name,
         icon: { _type: "simpleImage", asset: "image-5dd9b5a5f02940ee7f8e21d25b9b51516ae09ec8-800x399-png" },
         author: "Hoa",
   
         stepTitle: "New tutorial step",
-        content:          <div className="App">
-        <Editor />
-      </div>,
+        content: "New tutorial content",
         
         hasHint: false,
         language: "en",

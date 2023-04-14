@@ -9,30 +9,34 @@ import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
-import onChange from "./onChange"
+import onChange from "./onChange";
+import { Tutorial } from "./model";
+import { EditorState } from "lexical";
+
 
 function Placeholder() {
   return <div className="editor-placeholder" >Add tutorial content</div>
 }
 
-const startContent = `{"root":
-    {"children":
-      [{"children":
-        [{"detail":0,"format":1,"mode":"normal","style":"",
-        "text":"starting off: 1/3","type":"text","version":1}],
-        "direction":"ltr","format":"","indent":0,"type":"paragraph","version":1},
-      {"children":
-        [{"detail":0,"format":0,"mode":"normal","style":"",
-        "text":"Lorem  ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim  veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea  commodo consequat. ","type":"text","version":1}],
-        "direction":"ltr","format":"","indent":0,"type":"paragraph","version":1},
-      {"children":
-        [{"detail":0,"format":0,"mode":"normal","style":"",
-        "text":"Duis aute irure dolor in reprehenderit in voluptate  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint  occaecat cupidatat non proident, sunt in culpa qui officia deserunt  mollit anim id est laborum.","type":"text","version":1}],
-        "direction":"ltr","format":"","indent":0,"type":"paragraph","version":1},
-      {"children":[],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1}],
-    "direction":"ltr","format":"","indent":0,"type":"root","version":1}}`
 
-const editorConfig = {
+
+export function startContent (tutorial: Tutorial): void {
+    editorConfig.editorState = "".concat(`{"root":
+      {"children":
+        [{"children":
+          [{"detail":0,"format":1,"mode":"normal","style":"", "text":"`, tutorial.stepTitle, `","type":"text","version":1}],
+          "direction":"ltr","format":"","indent":0,"type":"paragraph","version":1
+        },
+        {"children":
+          [{"detail":0,"format":0,"mode":"normal","style":"", "text":"`, tutorial.content, `","type":"text","version":1}],
+          "direction":"ltr","format":"","indent":0,"type":"paragraph","version":1
+        }],
+        "direction":"ltr","format":"","indent":0,"type":"root","version":1
+      }
+    }`);
+  }
+
+var editorConfig = {
   namespace: "",
   // The editor theme
   theme: ExampleTheme,
@@ -40,7 +44,7 @@ const editorConfig = {
   onError(error: Error) {
     throw error;
   },
-  editorState: startContent,
+  editorState:"",
   // Any custom nodes go here
   nodes: [
     ListNode,
@@ -48,7 +52,7 @@ const editorConfig = {
     CodeNode,
     CodeHighlightNode,
   ]
-};
+}
 
 export default function Editor() {
   return (

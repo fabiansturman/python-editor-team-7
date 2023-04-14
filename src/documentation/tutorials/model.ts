@@ -6,7 +6,7 @@
  * Note this is based off ideas/model.ts
  */
 
-import { PortableText, SimpleImage, Slug } from "../../common/sanity";
+import { SimpleImage, Slug } from "../../common/sanity";
 import { HasCompatibility } from "../common/model";
 
 

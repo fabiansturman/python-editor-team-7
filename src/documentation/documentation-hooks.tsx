@@ -11,7 +11,7 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from "react";
 import useIsUnmounted from "../common/use-is-unmounted";
 import { apiDocs, ApiDocsResponse } from "../language-server/apidocs";

@@ -1,37 +1,26 @@
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  SELECTION_CHANGE_COMMAND,
-  FORMAT_TEXT_COMMAND,
-  FORMAT_ELEMENT_COMMAND,
-  $getSelection,
-  $isRangeSelection,
-  $createParagraphNode,
-  $getNodeByKey
-} from "lexical";
-import {
-  $isParentElementRTL,
-  $wrapNodes,
-  $isAtNodeEnd
-} from "@lexical/selection";
-import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
-import {
-  INSERT_ORDERED_LIST_COMMAND,
-  INSERT_UNORDERED_LIST_COMMAND,
-  REMOVE_LIST_COMMAND,
-  $isListNode,
-  ListNode
-} from "@lexical/list";
-import { createPortal } from "react-dom";
-import {
-  $createHeadingNode,
-  $createQuoteNode,
-  $isHeadingNode
-} from "@lexical/rich-text";
 import {
   $createCodeNode,
   $isCodeNode
 } from "@lexical/code";
+import {
+  $isListNode,
+  ListNode
+} from "@lexical/list";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import {
+  $isHeadingNode
+} from "@lexical/rich-text";
+import {
+  $isAtNodeEnd, $wrapNodes
+} from "@lexical/selection";
+import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
+import {
+  $createParagraphNode,
+  $getNodeByKey, $getSelection,
+  $isRangeSelection, FORMAT_TEXT_COMMAND, SELECTION_CHANGE_COMMAND
+} from "lexical";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 const LowPriority = 1;
 

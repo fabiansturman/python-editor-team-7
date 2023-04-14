@@ -1,5 +1,5 @@
-import { $getRoot, $getSelection, EditorState } from "lexical";
-import {active} from "./TutorialsDocumentation";
+import { EditorState } from "lexical";
+import { active } from "./TutorialsDocumentation";
 
 // When the editor changes, you can get notified via the
 // LexicalOnChangePlugin!

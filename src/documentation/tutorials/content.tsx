@@ -7,9 +7,11 @@
  */
 import { fetchContent } from "../../common/sanity";
 import { Tutorial } from "./model";
+import { useState } from 'react';
 import { Editable, EditableInput, EditableTextarea, EditablePreview, Container, Box } from '@chakra-ui/react';
 import "./styles.css";
 import Editor from "./Editor";
+import { generateTutorials } from "./TutorialsDocumentation";
 
 export const generateTestTutorials = (languageId: string): Tutorial[] =>
   {
@@ -20,14 +22,15 @@ export const generateTestTutorials = (languageId: string): Tutorial[] =>
       author: "Fabian",
 
       stepTitle: "starting off: 1/3",
-      content: <Container maxW='2xl' bg='red.100' centerContent>
-            <Box padding='4' bg='blue.400' color='black' maxW='md'>
+      content: <Container>
+            <Box>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
                   Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
                   Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
                   Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
             </Box>
-          </Container>,
+          </Container>
+          ,
       
       hasHint: false,
       language: "en",
@@ -47,8 +50,8 @@ export const generateTestTutorials = (languageId: string): Tutorial[] =>
       author: "Fabian",
 
       stepTitle: "in the middle: 2/3",
-      content:<Container maxW='2xl' bg='red.100' centerContent>
-      <Box padding='4' bg='blue.400' color='black' maxW='md'>
+      content:<Container>
+      <Box>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
             Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
             Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
@@ -76,8 +79,8 @@ export const generateTestTutorials = (languageId: string): Tutorial[] =>
       author: "Fabian",
 
       stepTitle: "last step! : 3/3",
-      content:<Container maxW='2xl' bg='red.100' centerContent>
-      <Box padding='4' bg='blue.400' color='black' maxW='md'>
+      content:<Container>
+      <Box>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
             Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
             Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
@@ -102,9 +105,9 @@ export const generateTestTutorials = (languageId: string): Tutorial[] =>
       icon: { _type: "simpleImage", asset: "image-09a0de4a9ed72dc1c1cee28e4981672e24bafdff-800x400-png" },
       author: "Fabian",
 
-      stepTitle: "starting off: 1/2",
-      content:<Container maxW='2xl' bg='red.100' centerContent>
-      <Box padding='4' bg='blue.400' color='black' maxW='md'>
+      stepTitle: "starting off: 1/1",
+      content:<Container>
+      <Box>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
             Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
             Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
@@ -116,62 +119,13 @@ export const generateTestTutorials = (languageId: string): Tutorial[] =>
       language: "en",
       slug: { _type: "slug", current: "tutorial-2a" },
       
-      hasNextSection: true,
+      hasNextSection: false,
       nextSection: { _type: "slug", current: "tutorial-2b" },
       hasPrevSection: false,
       
       compatibility: ["microbitV1", "microbitV2"],
     };
 
-    const tute2b: Tutorial = {
-      _id: "2b",
-      name: "Tutorial 2",
-      icon: { _type: "simpleImage", asset: "image-09a0de4a9ed72dc1c1cee28e4981672e24bafdff-800x400-png" },
-      author: "Fabian",
 
-      stepTitle: "done already! yay!: 2/2",
-      content:<Container maxW='2xl' bg='red.100' centerContent>
-      <Box padding='4' bg='blue.400' color='black' maxW='md'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </Box>
-    </Container>,
-      hasHint: true,
-      hint: "of course you are, cheeky",
-      
-      language: "en",
-      slug: { _type: "slug", current: "tutorial-2b" },
-      
-      hasNextSection: false,
-      hasPrevSection: true,
-      prevSection: { _type: "slug", current: "tutorial-2a"},
-      
-      compatibility: ["microbitV1", "microbitV2"],
-    };
-
-    const newTute: Tutorial = {
-      _id: "new1",
-      name: "New tutorial",
-      icon: { _type: "simpleImage", asset: "image-5dd9b5a5f02940ee7f8e21d25b9b51516ae09ec8-800x399-png" },
-      author: "Hoa",
-
-      stepTitle: "New tutorial step",
-      content:          <div className="App">
-      <Editor />
-    </div>,
-      
-      hasHint: false,
-      language: "en",
-      slug: { _type: "slug", current: "create-new-1" },
-      
-      hasNextSection: false,
-      hasPrevSection: false,
-      
-      compatibility: ["microbitV1", "microbitV2"],
-    };
-
-
-    return [tute1a, tute1b, tute1c, tute2a, tute2b, newTute]; //add tute 2 to this array once I have one tute showing
+    return [tute1a, tute1b, tute1c, tute2a].concat(generateTutorials); //add tute 2 to this array once I have one tute showing
   }

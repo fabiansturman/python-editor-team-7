@@ -8,6 +8,7 @@
 import { Link, Stack, Text } from "@chakra-ui/layout";
 import { Image, SimpleGrid } from "@chakra-ui/react";
 import { ReactNode, useCallback, useRef } from "react";
+import { useState } from 'react';
 import { FormattedMessage, useIntl } from "react-intl";
 import AreaHeading from "../../common/AreaHeading";
 import { docStyles } from "../../common/documentation-styles";
@@ -22,19 +23,18 @@ import DocumentationContent, {
 } from "../common/DocumentationContent";
 import { isV2Only } from "../common/model";
 import TutorialCard from "./TutorialCard";
+import Editor from "./Editor";
 import { Tutorial } from "./model";
 import DocumentationHeading from "../common/DocumentationHeading";
 import {ReactComponent as addNew} from "../add-new.svg";
-import { Editable, EditableInput, EditableTextarea, EditablePreview, Container, Box } from '@chakra-ui/react';
-
+import { generateTestTutorials } from "./content";
 
 interface TutorialsDocumentationProps {
     tutorials: Tutorial[];
 }
+var newtutes: Tutorial[] = [];
 
 const TutorialsDocumentation = ({ tutorials }: TutorialsDocumentationProps) => {
-  
-
   const [anchor, setAnchor] = useRouterTabSlug("tutorials");
   const direction = useAnimationDirection(anchor);
   const tutorialId = anchor?.id; //1 ??
@@ -72,7 +72,9 @@ const ActiveLevel = ({
   direction,
 }: ActiveLevelProps) => {
   //We genrerate starterTutorials by filtering tutorials and removing all which are not the start of a linked list of Tutorial instances
-  const starterTutorials = tutorials.filter(tutorial => ! tutorial.hasPrevSection)
+  const [tutes, setTutes] = useState(tutorials);
+  const [starterTutorials, setStarterTutorials] = useState(tutorials.filter(tutorial => ! tutorial.hasPrevSection));
+  const [name, setName] = useState('');
     //We only show starterTutorials in the menu
 
   const activeTutorial = tutorials.find((tutorial) => tutorial.slug.current === tutorialId); //finds a tutorial whose slug matches our tutorialID variable
@@ -83,11 +85,12 @@ const ActiveLevel = ({
   const contentWidth = contentRect?.width ?? 0;
   const numCols =
     !contentWidth || contentWidth > 1100 ? 3 : contentWidth > 550 ? 2 : 1;
+  const [editMode, setEditMode] = useState(false);
 
   if (activeTutorial) { //this runs if there is currently a tutorial that is open right now
     var back = "Back";
     var next = "Next";
-
+    var edit = "Edit";
 
     return (
       <HeadedScrollablePanel
@@ -126,7 +129,8 @@ const ActiveLevel = ({
             </DocumentationContextProvider>
           </Stack>
         )}
-        <SimpleGrid columns={2} spacing={5} p={5} ref={ref} >
+
+        <SimpleGrid columns={3} spacing={5} p={5} ref={ref} >
           <DocumentationHeading
             textAlign="center"
             px={2.5}
@@ -159,7 +163,39 @@ const ActiveLevel = ({
             overflow="hidden"
             boxShadow="md"
           />
+          <DocumentationHeading
+            textAlign="center"
+            px={2.5}
+            pb={2}
+            name={edit}
+            isV2Only={false}
+            onClick={() => setEditMode(!editMode)}
+            hidden = {editMode}
+            cursor="pointer"
+            background="brand.500"
+            borderRadius="lg"
+            overflow="hidden"
+            boxShadow="md"
+
+          />
+          <DocumentationHeading
+            textAlign="center"
+            px={2.5}
+            pb={2}
+            name={"Save"}
+            isV2Only={false}
+            onClick={() => setEditMode(!editMode)}
+            hidden = {!editMode}
+            cursor="pointer"
+            background="brand.500"
+            borderRadius="lg"
+            overflow="hidden"
+            boxShadow="md"
+
+          />
+
         </SimpleGrid>
+        {editMode && (<Editor />)}
       </HeadedScrollablePanel>
     );
   }
@@ -181,10 +217,41 @@ const ActiveLevel = ({
             name={tutorial.name}
             isV2Only={isV2Only(tutorial)}
             image={tutorial.icon}
-            onClick={() => onNavigate(tutorial.slug.current)}
+            onClick={() => {
+              onNavigate(tutorial.slug.current);
+            }}
           />
         ))}
       </SimpleGrid>
+      <>
+      <input
+        value={name}
+        onChange={e => setName(e.target.value)}
+      />
+      <button onClick={() => {
+        const t: Tutorial = { _id: name.replace(" ", "-") + "1",
+        name: name,
+        icon: { _type: "simpleImage", asset: "image-5dd9b5a5f02940ee7f8e21d25b9b51516ae09ec8-800x399-png" },
+        author: "Hoa",
+  
+        stepTitle: "New tutorial step",
+        content:          <div className="App">
+        <Editor />
+      </div>,
+        
+        hasHint: false,
+        language: "en",
+        slug: { _type: "slug", current: name.replace(" ", "-") + "-1" },
+        
+        hasNextSection: false,
+        hasPrevSection: false,
+        
+        compatibility: ["microbitV1", "microbitV2"], };
+        setStarterTutorials([...starterTutorials, t]);
+        setTutes([...tutes, t]);
+        newtutes = [...newtutes, t];
+      }}>Add new tutorial</button>
+      </>
       <Text pb={8} px={5}>
         <FormattedMessage
           id="about-tutorials"
@@ -198,6 +265,7 @@ const ActiveLevel = ({
               >
                 {chunks}
               </Link>
+              
             ),
           }}
         />
@@ -205,5 +273,7 @@ const ActiveLevel = ({
     </HeadedScrollablePanel>
   );
 }; 
+
+export var generateTutorials: Tutorial[] = newtutes;
 
 export default TutorialsDocumentation;

@@ -6,7 +6,7 @@
  * Note this is based off ideas/IdeasDOcumentation.tsx
  */
 import { Link, Stack, Text } from "@chakra-ui/layout";
-import { SimpleGrid } from "@chakra-ui/react";
+import { Button, Input, SimpleGrid } from "@chakra-ui/react";
 import { ReactNode, useCallback, useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import AreaHeading from "../../common/AreaHeading";
@@ -25,8 +25,6 @@ import { generateTestTutorials } from "./content";
 import Editor, { startContent } from "./Editor";
 import { Tutorial } from "./model";
 import TutorialCard from "./TutorialCard";
-
-var newtutes: Tutorial[] = [];
 
 const TutorialsDocumentation = () => {
   const [tutorials, setTutorials] = useState(generateTestTutorials("en"));
@@ -134,70 +132,136 @@ const ActiveLevel = ({
           </Stack>
         )}
 
-        <SimpleGrid columns={3} spacing={5} p={5} ref={ref}>
-          <DocumentationHeading
-            textAlign="center"
-            px={2.5}
-            pb={2}
-            name={back}
-            isV2Only={false}
-            onClick={() => {
+        <SimpleGrid minChildWidth='120px' columns={2} ref={ref}>
+          <Button colorScheme='red' onClick={() => {
               if (activeTutorial.hasPrevSection)
                 onNavigate(activeTutorial.prevSection!.current);
-            }}
-            hidden={!activeTutorial.hasPrevSection}
-            cursor="pointer"
-            background="brand.500"
-            borderRadius="lg"
-            overflow="hidden"
-            boxShadow="md"
-          />
-
-          <DocumentationHeading
-            textAlign="center"
-            px={2.5}
-            pb={2}
-            name={next}
-            isV2Only={false}
-            onClick={() => {
+            }} hidden={!activeTutorial.hasPrevSection}>Back</Button>
+          <Button colorScheme='green' onClick={() => {
               if (activeTutorial.hasNextSection)
                 onNavigate(activeTutorial.nextSection!.current);
+            }} hidden={!activeTutorial.hasNextSection}>Next</Button>
+          <Button colorScheme='blue' onClick={() => setEditMode(!editMode)} hidden={editMode}>Edit</Button>
+
+          <Button colorScheme='blue' onClick={() => setEditMode(!editMode)} hidden={!editMode}>Save</Button>
+
+          <Button onClick={() => { //add before
+            const newStep: Tutorial = {
+              _id: activeTutorial.name.replace(" ", "-").concat("-", tutorials.length.toString()),
+              name: activeTutorial.name,
+              icon: {
+                _type: "simpleImage",
+                asset:
+                  "image-5dd9b5a5f02940ee7f8e21d25b9b51516ae09ec8-800x399-png",
+              },
+              author: "Hoa",
+
+              stepTitle: "New tutorial step",
+              content: "New tutorial content before what was there before",
+
+              hasHint: false,
+              language: "en",
+              slug: { _type: "slug", current: activeTutorial.name.replace(" ", "-").concat("-", tutorials.length.toString()) },
+
+              nextSection: activeTutorial.slug,
+              hasNextSection: true,
+
+              prevSection: activeTutorial.prevSection,
+              hasPrevSection: activeTutorial.hasPrevSection,
+
+              compatibility: ["microbitV1", "microbitV2"],
+            };
+            setTutorials([...tutorials, newStep]);
+            if (typeof activeTutorial.prevSection !== 'undefined') {
+              const prevTutorial = tutorials.find(tutorial => tutorial.slug.current == activeTutorial.prevSection!.current);
+              if (typeof prevTutorial !== 'undefined') {
+                prevTutorial!.nextSection = newStep.slug;
+                prevTutorial!.hasNextSection = true;
+              }
+            }
+            activeTutorial.prevSection = newStep.slug;
+            activeTutorial.hasPrevSection = true;
+            onNavigate(newStep.slug.current);
+
+          }} hidden={!editMode}>Add before</Button>
+
+          <Button onClick={() => { //add after
+            const newStep: Tutorial = {
+              _id: activeTutorial.name.replace(" ", "-").concat("-", tutorials.length.toString()),
+              name: activeTutorial.name,
+              icon: {
+                _type: "simpleImage",
+                asset:
+                  "image-5dd9b5a5f02940ee7f8e21d25b9b51516ae09ec8-800x399-png",
+              },
+              author: "Hoa",
+
+              stepTitle: "New tutorial step",
+              content: "New tutorial content after what was there before",
+
+              hasHint: false,
+              language: "en",
+              slug: { _type: "slug", current: activeTutorial.name.replace(" ", "-").concat("-", tutorials.length.toString()) },
+
+              nextSection: activeTutorial.nextSection,
+              hasNextSection: activeTutorial.hasNextSection,
+
+              prevSection: activeTutorial.slug,
+              hasPrevSection: true,
+
+              compatibility: ["microbitV1", "microbitV2"],
+            };
+            setTutorials([...tutorials, newStep]);
+            if (typeof activeTutorial.nextSection !== 'undefined') {
+              const nextTutorial = tutorials.find(tutorial => tutorial.slug.current == activeTutorial.nextSection!.current);
+              if (typeof nextTutorial !== 'undefined') {
+                nextTutorial.prevSection = newStep.slug;
+                nextTutorial.hasPrevSection = true;
             }}
-            hidden={!activeTutorial.hasNextSection}
-            cursor="pointer"
-            background="brand.500"
-            borderRadius="lg"
-            overflow="hidden"
-            boxShadow="md"
-          />
-          <DocumentationHeading
-            textAlign="center"
-            px={2.5}
-            pb={2}
-            name={edit}
-            isV2Only={false}
-            onClick={() => setEditMode(!editMode)}
-            hidden={editMode}
-            cursor="pointer"
-            background="brand.500"
-            borderRadius="lg"
-            overflow="hidden"
-            boxShadow="md"
-          />
-          <DocumentationHeading
-            textAlign="center"
-            px={2.5}
-            pb={2}
-            name={"Save"}
-            isV2Only={false}
-            onClick={() => setEditMode(!editMode)}
-            hidden={!editMode}
-            cursor="pointer"
-            background="brand.500"
-            borderRadius="lg"
-            overflow="hidden"
-            boxShadow="md"
-          />
+            activeTutorial.nextSection = newStep.slug;
+            activeTutorial.hasNextSection = true;
+            onNavigate(newStep.slug.current);
+
+          }} hidden={!editMode}>Add after</Button>
+          
+          <Button onClick={() => { //delete
+            setTutorials(tutorials.filter(t => t !== activeTutorial));
+            if (typeof activeTutorial.prevSection !== 'undefined') { //prev section exists
+              if (typeof activeTutorial.nextSection !== 'undefined') { //next section exists
+                const prevTutorial = tutorials.find(tutorial => tutorial.slug.current == activeTutorial.prevSection!.current);
+                if (typeof prevTutorial !== 'undefined') {
+                  prevTutorial.nextSection = activeTutorial.nextSection;
+                  const nextTutorial = tutorials.find(tutorial => tutorial.slug.current == activeTutorial.nextSection!.current);
+                  if (typeof nextTutorial !== 'undefined') {
+                    nextTutorial.prevSection = activeTutorial.prevSection;
+                    onNavigate(activeTutorial.nextSection!.current);
+                  }
+                }
+              }
+              else { //next section does not exist
+                const prevTutorial = tutorials.find(tutorial => tutorial.slug.current == activeTutorial.prevSection!.current);
+                if (typeof prevTutorial !== 'undefined') {
+                  prevTutorial.nextSection = undefined;
+                  prevTutorial.hasNextSection = false;
+                  onNavigate(activeTutorial.prevSection!.current);
+                }
+              }
+            }
+            else { //prev section does not exist
+              if (typeof activeTutorial.nextSection !== 'undefined') { //next section exists
+                const nextTutorial = tutorials.find(tutorial => tutorial.slug.current == activeTutorial.nextSection!.current);
+                if (typeof nextTutorial !== 'undefined') {
+                  nextTutorial.prevSection = undefined;
+                  nextTutorial.hasPrevSection = false;
+                  onNavigate(activeTutorial.nextSection!.current);
+                }
+              }
+              else { //next section does not exist
+                onNavigate('/tutorials');
+              }
+            }
+          }
+          } hidden={!editMode}>Delete</Button>
         </SimpleGrid>
         {editMode && <Editor />}
       </HeadedScrollablePanel>
@@ -231,36 +295,39 @@ const ActiveLevel = ({
           ))}
       </SimpleGrid>
       <>
-        <input value={name} onChange={(e) => setName(e.target.value)} />
-        <button
+        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder='Enter new tutorial name' />
+        <Button
           onClick={() => {
-            const newTutorial: Tutorial = {
-              _id: name.replace(" ", "-") + "-1",
-              name: name,
-              icon: {
-                _type: "simpleImage",
-                asset:
-                  "image-5dd9b5a5f02940ee7f8e21d25b9b51516ae09ec8-800x399-png",
-              },
-              author: "Hoa",
+            if (name.trim() !== '' && typeof tutorials.find(tutorial => tutorial._id == name.trim().replace(" ", "-") + "-1") == 'undefined' && typeof tutorials.find(tutorial => tutorial.name == name.trim()) == 'undefined') {
+              const newTutorial: Tutorial = {
+                _id: name.trim().replace(" ", "-") + "-1",
+                name: name.trim(),
+                icon: {
+                  _type: "simpleImage",
+                  asset:
+                    "image-5dd9b5a5f02940ee7f8e21d25b9b51516ae09ec8-800x399-png",
+                },
+                author: "Hoa",
 
-              stepTitle: "New tutorial step",
-              content: "New tutorial content",
+                stepTitle: "New tutorial step",
+                content: "New tutorial content",
 
-              hasHint: false,
-              language: "en",
-              slug: { _type: "slug", current: name.replace(" ", "-") + "-1" },
+                hasHint: false,
+                language: "en",
+                slug: { _type: "slug", current: name.trim().replace(" ", "-") + "-1" },
 
-              hasNextSection: false,
-              hasPrevSection: false,
+                hasNextSection: false,
+                hasPrevSection: false,
 
-              compatibility: ["microbitV1", "microbitV2"],
-            };
-            setTutorials([...tutorials, newTutorial]);
-          }}
+                compatibility: ["microbitV1", "microbitV2"],
+              };
+              setTutorials([...tutorials, newTutorial]);
+              setName('');
+          }
+        }}
         >
           Add new tutorial
-        </button>
+        </Button>
       </>
       <Text pb={8} px={5}>
         <FormattedMessage
@@ -282,7 +349,5 @@ const ActiveLevel = ({
     </HeadedScrollablePanel>
   );
 };
-
-export var generateTutorials: Tutorial[] = newtutes;
 
 export default TutorialsDocumentation;

@@ -1,7 +1,7 @@
 // NIM Parser for micro:bit Python Editor
 
 import { integer } from "vscode-languageserver-protocol";
-import { Tutorial } from "../model"
+import { Tutorial } from "../model";
 
 export class Parser {
 

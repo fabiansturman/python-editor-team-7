@@ -10,9 +10,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import {
   $isHeadingNode
 } from "@lexical/rich-text";
-import {
-  $isAtNodeEnd, $wrapNodes
-} from "@lexical/selection";
+import { $wrapNodes } from "@lexical/selection";
 import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
 import {
   $createParagraphNode,

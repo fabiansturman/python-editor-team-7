@@ -6,9 +6,10 @@
  * Note this is based off ideas/IdeasDOcumentation.tsx
  */
 import { Link, Stack, Text } from "@chakra-ui/layout";
-import { Button, Input, SimpleGrid } from "@chakra-ui/react";
+import { Button, Input, SimpleGrid, Heading } from "@chakra-ui/react";
 import { ReactNode, useCallback, useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
+import { integer } from "vscode-languageserver-protocol";
 import AreaHeading from "../../common/AreaHeading";
 import { docStyles } from "../../common/documentation-styles";
 import HeadedScrollablePanel from "../../common/HeadedScrollablePanel";
@@ -19,7 +20,6 @@ import DocumentationBreadcrumbHeading from "../common/DocumentationBreadcrumbHea
 import {
   DocumentationContextProvider
 } from "../common/DocumentationContent";
-import DocumentationHeading from "../common/DocumentationHeading";
 import { isV2Only } from "../common/model";
 import { generateTestTutorials } from "./content";
 import Editor, { startContent } from "./Editor";
@@ -28,6 +28,7 @@ import TutorialCard from "./TutorialCard";
 
 const TutorialsDocumentation = () => {
   const [tutorials, setTutorials] = useState(generateTestTutorials("en"));
+  const [countTutorials, setCountTutorials] = useState(tutorials.length);
   const [anchor, setAnchor] = useRouterTabSlug("tutorials");
   const direction = useAnimationDirection(anchor);
   const tutorialId = anchor?.id; //1 ??
@@ -50,6 +51,8 @@ const TutorialsDocumentation = () => {
       onNavigate={handleNavigate}
       tutorials={tutorials}
       setTutorials={setTutorials}
+      countTutorials={countTutorials}
+      setCountTutorials={setCountTutorials}
       direction={direction}
     />
   );
@@ -62,6 +65,8 @@ interface ActiveLevelProps {
   direction: "forward" | "back" | "none";
   tutorials: Tutorial[];
   setTutorials: (tutorials: Tutorial[]) => void;
+  countTutorials: integer;
+  setCountTutorials: (countTutorials: integer) => void;
 }
 
 export var active: Tutorial | undefined;
@@ -72,6 +77,8 @@ const ActiveLevel = ({
   tutorials,
   direction,
   setTutorials,
+  countTutorials,
+  setCountTutorials
 }: ActiveLevelProps) => {
   const [name, setName] = useState("");
   //We only show starterTutorials in the menu
@@ -88,14 +95,12 @@ const ActiveLevel = ({
   const numCols =
     !contentWidth || contentWidth > 1100 ? 3 : contentWidth > 550 ? 2 : 1;
   const [editMode, setEditMode] = useState(false);
+  const [tutorialName, setTutorialName] = useState(activeTutorial ? activeTutorial.name : "");
+  const [stepName, setStepName] = useState(activeTutorial ? activeTutorial.stepTitle : "");
 
   if (activeTutorial) {
     //this runs if there is currently a tutorial that is open right now
-    var back = "Back";
-    var next = "Next";
-    var edit = "Edit";
     startContent(activeTutorial);
-
     return (
       <HeadedScrollablePanel
         key={activeTutorial.slug.current}
@@ -135,19 +140,46 @@ const ActiveLevel = ({
         <SimpleGrid minChildWidth='120px' columns={2} ref={ref}>
           <Button colorScheme='red' onClick={() => {
               if (activeTutorial.hasPrevSection)
-                onNavigate(activeTutorial.prevSection!.current);
-            }} hidden={!activeTutorial.hasPrevSection}>Back</Button>
+                onNavigate(activeTutorial.prevSection!.current)
+            }} hidden={!activeTutorial.hasPrevSection || editMode}>Back</Button>
           <Button colorScheme='green' onClick={() => {
               if (activeTutorial.hasNextSection)
                 onNavigate(activeTutorial.nextSection!.current);
-            }} hidden={!activeTutorial.hasNextSection}>Next</Button>
+            }} hidden={!activeTutorial.hasNextSection || editMode}>Next</Button>
           <Button colorScheme='blue' onClick={() => setEditMode(!editMode)} hidden={editMode}>Edit</Button>
 
-          <Button colorScheme='blue' onClick={() => setEditMode(!editMode)} hidden={!editMode}>Save</Button>
+          <Button colorScheme='blue' onClick={() => {
+            const tutorialSequence = tutorials.filter(t => t.name === activeTutorial.name);
+            if (stepName.trim().replace(/\s{1,}/g, " ") !== "") {
+              activeTutorial.stepTitle = stepName.trim().replace(/\s{1,}/g, " ");
+            }
+            if (tutorialName === activeTutorial.name || (tutorialName.trim().replace(/\s{1,}/g, "-") !== "" && !tutorials.find(tutorial => tutorial.name.trim().replace(/\s{1,}/g, "-") === tutorialName.trim(). replace(/\s{1,}/g, "-")))) {
+              tutorialSequence.forEach((tutorial) => {
+                tutorial.name = tutorialName;
+              })
+              setEditMode(!editMode);
+            }
+            else {
+              alert("Pick a unique title");
+              setTutorialName(activeTutorial.name);
+            }
+          }} hidden={!editMode}>Save</Button>
+
+          {//Discard button does not work as intended - content still changes
+          }
+          <Button colorScheme='red' onClick={() => {
+              setTutorialName(activeTutorial.name);
+              setStepName(activeTutorial.stepTitle);
+              setEditMode(!editMode);
+            }} hidden={!editMode}>Discard</Button>
+
 
           <Button onClick={() => { //add before
+            setCountTutorials(countTutorials+1);
+            setTutorialName(activeTutorial.name);
+            setStepName("New tutorial step");
             const newStep: Tutorial = {
-              _id: activeTutorial.name.replace(" ", "-").concat("-", tutorials.length.toString()),
+              _id: activeTutorial.name. replace(/\s/g, "-").concat("-", countTutorials.toString()),
               name: activeTutorial.name,
               icon: {
                 _type: "simpleImage",
@@ -161,7 +193,7 @@ const ActiveLevel = ({
 
               hasHint: false,
               language: "en",
-              slug: { _type: "slug", current: activeTutorial.name.replace(" ", "-").concat("-", tutorials.length.toString()) },
+              slug: { _type: "slug", current: activeTutorial.name. replace(/\s/g, "-").concat("-", countTutorials.toString()) },
 
               nextSection: activeTutorial.slug,
               hasNextSection: true,
@@ -186,8 +218,12 @@ const ActiveLevel = ({
           }} hidden={!editMode}>Add before</Button>
 
           <Button onClick={() => { //add after
+            setCountTutorials(countTutorials+1);
+            setTutorialName(activeTutorial.name);
+            setStepName("New tutorial step");
+
             const newStep: Tutorial = {
-              _id: activeTutorial.name.replace(" ", "-").concat("-", tutorials.length.toString()),
+              _id: activeTutorial.name. replace(/\s/g, "-").concat("-", countTutorials.toString()),
               name: activeTutorial.name,
               icon: {
                 _type: "simpleImage",
@@ -201,7 +237,7 @@ const ActiveLevel = ({
 
               hasHint: false,
               language: "en",
-              slug: { _type: "slug", current: activeTutorial.name.replace(" ", "-").concat("-", tutorials.length.toString()) },
+              slug: { _type: "slug", current: activeTutorial.name. replace(/\s/g, "-").concat("-", countTutorials.toString()) },
 
               nextSection: activeTutorial.nextSection,
               hasNextSection: activeTutorial.hasNextSection,
@@ -249,7 +285,7 @@ const ActiveLevel = ({
             }
             else { //prev section does not exist
               if (typeof activeTutorial.nextSection !== 'undefined') { //next section exists
-                const nextTutorial = tutorials.find(tutorial => tutorial.slug.current == activeTutorial.nextSection!.current);
+                const nextTutorial = tutorials.find(tutorial => tutorial.slug.current === activeTutorial.nextSection!.current);
                 if (typeof nextTutorial !== 'undefined') {
                   nextTutorial.prevSection = undefined;
                   nextTutorial.hasPrevSection = false;
@@ -263,7 +299,14 @@ const ActiveLevel = ({
           }
           } hidden={!editMode}>Delete</Button>
         </SimpleGrid>
-        {editMode && <Editor />}
+        {editMode && <>
+          <Heading size="md">Change title</Heading>
+          <Input value={tutorialName} onChange={(e) => setTutorialName(e.target.value)}  />
+          <Heading size="md">Change step title</Heading>
+          <Input value={stepName} onChange={(e) => setStepName(e.target.value)}  />
+          <Heading size="md">Change content</Heading>
+          <Editor />
+        </>} 
       </HeadedScrollablePanel>
     );
   }
@@ -298,10 +341,10 @@ const ActiveLevel = ({
         <Input value={name} onChange={(e) => setName(e.target.value)} placeholder='Enter new tutorial name' />
         <Button
           onClick={() => {
-            if (name.trim() !== '' && typeof tutorials.find(tutorial => tutorial._id == name.trim().replace(" ", "-") + "-1") == 'undefined' && typeof tutorials.find(tutorial => tutorial.name == name.trim()) == 'undefined') {
+            if (name.trim(). replace(/\s{1,}/g, "-") !== '' && typeof tutorials.find(tutorial => tutorial._id.trim(). replace(/\s{1,}/g, "-") === name.trim().replace(/\s{1,}/g, "-") + "-1") == 'undefined' && typeof tutorials.find(tutorial => tutorial.name.trim(). replace(/\s{1,}/g, "-") == name.trim(). replace(/\s{1,}/g, "-")) === "undefined") {
               const newTutorial: Tutorial = {
-                _id: name.trim().replace(" ", "-") + "-1",
-                name: name.trim(),
+                _id: name.trim().replace(/\s{1,}/g, "-"),
+                name: name.trim().replace(/\s{1,}/g, " "),
                 icon: {
                   _type: "simpleImage",
                   asset:
@@ -314,7 +357,7 @@ const ActiveLevel = ({
 
                 hasHint: false,
                 language: "en",
-                slug: { _type: "slug", current: name.trim().replace(" ", "-") + "-1" },
+                slug: { _type: "slug", current: name.trim().replace(/\s{1,}/g, "-")},
 
                 hasNextSection: false,
                 hasPrevSection: false,
@@ -324,6 +367,7 @@ const ActiveLevel = ({
               setTutorials([...tutorials, newTutorial]);
               setName('');
           }
+          else alert("Pick unique title")
         }}
         >
           Add new tutorial

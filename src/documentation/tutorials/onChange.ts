@@ -11,9 +11,8 @@ export default function onChange(editorState: EditorState): void {
     const jsonState = JSON.parse(str);
     console.log(str);
     if (typeof active !== "undefined") {
-      active.stepTitle = jsonState.root.children[0].children[0].text;
       var x = "";
-      for (let i = 1; i < jsonState.root.children.length; i++) {
+      for (let i = 0; i < jsonState.root.children.length; i++) {
         if (typeof jsonState.root.children[i].children[0] !== "undefined") {
           x = x.concat(" ", jsonState.root.children[i].children[0].text);
         }

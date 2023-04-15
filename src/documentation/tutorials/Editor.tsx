@@ -22,10 +22,6 @@ export function startContent (tutorial: Tutorial): void {
     editorConfig.editorState = "".concat(`{"root":
       {"children":
         [{"children":
-          [{"detail":0,"format":1,"mode":"normal","style":"", "text":"`, tutorial.stepTitle, `","type":"text","version":1}],
-          "direction":"ltr","format":"","indent":0,"type":"paragraph","version":1
-        },
-        {"children":
           [{"detail":0,"format":0,"mode":"normal","style":"", "text":"`, tutorial.content, `","type":"text","version":1}],
           "direction":"ltr","format":"","indent":0,"type":"paragraph","version":1
         }],

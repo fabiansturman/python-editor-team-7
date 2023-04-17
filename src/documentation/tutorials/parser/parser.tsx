@@ -57,9 +57,14 @@ export class Parser {
     }
 
     // Our tutorial objects as created by the parse function aren't yet linked; we'll now do this at the end after parsing
+    // We'll also set the slugs to use the tutorial name
     #linkList() {
         var i : integer = 0;
+        var slugifiedName : string = this.#tutorialName.toLowerCase().replace(/\s/g, "-");
         while(i < this.#steps.length - 1){
+            this.#steps[i].slug = {_type: "slug", current: slugifiedName + "-" + i};
+            this.#steps[i+1].slug = {_type: "slug", current: slugifiedName + "-" + i};
+
             this.#steps[i].hasNextSection = true;
             this.#steps[i].nextSection = {_type: "slug", current: this.#steps[i+1].slug.current};
             this.#steps[i+1].hasPrevSection = true;
@@ -168,7 +173,7 @@ export class Parser {
                         hint: "nil",
 
                         language: "en",
-                        slug: {_type: "slug", current: "step-" + stepNum},
+                        slug: {_type: "slug", current: "step-" + stepNum},      // This is a temporary value until the end of the parsing stage
 
                         // These will be set at the end as appropriate
                         hasNextSection: false,

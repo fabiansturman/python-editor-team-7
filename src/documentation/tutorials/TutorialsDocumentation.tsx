@@ -138,15 +138,16 @@ const ActiveLevel = ({
           </Stack>
         )}
 
-        <SimpleGrid minChildWidth='120px' columns={2} ref={ref}>
+        <SimpleGrid minChildWidth='120px' spacing={2} columns={2} ref={ref}>
           <Button colorScheme='red' onClick={() => {
               if (activeTutorial.hasPrevSection)
                 onNavigate(activeTutorial.prevSection!.current)
-            }} hidden={!activeTutorial.hasPrevSection || editMode}>Back</Button>
+            }} disabled={!activeTutorial.hasPrevSection || editMode}>Back</Button>
+          
           <Button colorScheme='green' onClick={() => {
               if (activeTutorial.hasNextSection)
                 onNavigate(activeTutorial.nextSection!.current);
-            }} hidden={!activeTutorial.hasNextSection || editMode}>Next</Button>
+            }} disabled={!activeTutorial.hasNextSection || editMode}>Next</Button>
           <Button colorScheme='blue' onClick={() => setEditMode(!editMode)} hidden={editMode}>Edit</Button>
 
           <Button colorScheme='blue' onClick={() => {

@@ -301,7 +301,34 @@ const ActiveLevel = ({
           }
           } hidden={!editMode}>Delete</Button>
           <Button onClick={() => { // Download
+            const allTutorialSteps : Tutorial[] = tutorials.filter(t => t.name == activeTutorial.name);
+            var outputStr : string = "TutorialProperties [\n    TutorialName: " + activeTutorial.name + ";\n    Icon: " + activeTutorial.icon.asset + ";\n    Author: " + activeTutorial.author + ";\n]\n";
             
+            // We need to find the start of the linked list by tracing back through it
+            var startTutorialObject : Tutorial = activeTutorial;
+            while(startTutorialObject.hasPrevSection){
+              // @ts-ignore
+              startTutorialObject = tutorials.find(t => t.slug.current = startTutorialObject.prevSection!.current);
+            }
+
+            var currentStepNum : integer = 1;
+            var currentTutorial = startTutorialObject;
+            var endReached = false;
+            while(!endReached){
+              outputStr = outputStr + currentStepNum + " {\n    StepTitle: " + currentTutorial.stepTitle + ";\n    Contents: " + currentTutorial.content + ";\n}\n";
+              if(typeof currentTutorial.nextSection == 'undefined'){
+                endReached = true;
+              } else {
+                // @ts-ignore
+                currentTutorial = tutorials.find(t => t.slug.current == currentTutorial.nextSection!.current);
+              }
+              currentStepNum += 1;
+            }
+
+            var linkElement = document.createElement("a");
+            linkElement.href = "data:text/plain;charset=utf-8," + encodeURIComponent(outputStr);
+            linkElement.download = activeTutorial.name + ".nim";
+            linkElement.click();
           }
           } hidden={!editMode}>Download as NIM</Button>
         </SimpleGrid>

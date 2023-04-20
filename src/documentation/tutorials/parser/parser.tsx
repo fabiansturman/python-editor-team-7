@@ -13,7 +13,8 @@ export class Parser {
 
     // Remember: The step index parameter for this function is indexed starting at 0, unlike the syntax presented to the user
     #setProperty(propertyName : string, propertyValue : string, stepIndex : integer) {
-        if(propertyName in this.#steps[stepIndex]){
+        console.log("Setting step " + (stepIndex + 1) + "'s " + propertyName + " to " + propertyValue);
+        if(typeof this.#steps[stepIndex] == "object"){      // Check it's not null
             // We can't easily dynamically set this property, so a clunky switch case is the simplest way here
             switch(propertyName){
                 case "StepTitle":
@@ -62,8 +63,10 @@ export class Parser {
         var i : integer = 0;
         var slugifiedName : string = this.#tutorialName.toLowerCase().replace(/\s/g, "-");
         while(i < this.#steps.length - 1){
-            this.#steps[i].slug = {_type: "slug", current: slugifiedName + "-" + i};
-            this.#steps[i+1].slug = {_type: "slug", current: slugifiedName + "-" + i};
+            console.log("Setting step " + (i + 1) + "'s slug to " + (slugifiedName + "-" + (i+1)));
+            this.#steps[i].slug = {_type: "slug", current: slugifiedName + "-" + (i+1)};
+            console.log("Setting step " + (i + 2) + "'s slug to " + (slugifiedName + "-" + (i+2)));
+            this.#steps[i+1].slug = {_type: "slug", current: slugifiedName + "-" + (i+2)};
 
             this.#steps[i].hasNextSection = true;
             this.#steps[i].nextSection = {_type: "slug", current: this.#steps[i+1].slug.current};
@@ -92,10 +95,12 @@ export class Parser {
         for (const fileLine of fileLines){
             if(linesToSkip > 0){
                 linesToSkip -= 1;
+                lineCount += 1;
                 continue;
             }
 
             const truncatedLine : string = fileLine.trim();      // Remove syntactically irrelevant whitespace
+            console.log("Line " + lineCount + ": " + truncatedLine);
 
             if(readingStep || readingPropertyBlock){
                 // Process this line as a property in a block or a block ending
@@ -113,7 +118,7 @@ export class Parser {
                     }
 
                     const propertyName : string = truncatedLine.slice(0, firstColon).trim();
-                    var propertyContents : string = truncatedLine.slice(firstColon + 1).trim();
+                    var propertyContents : string = truncatedLine.slice(firstColon + 1, truncatedLine.length).trim();
 
                     // Now, we can only conclude if our contents terminate with a semicolon - if not, we add on the next line's contents until we find one
                     var currentRealLine : integer = lineCount;
@@ -125,11 +130,14 @@ export class Parser {
                         currentRealLine += 1;
                     }
 
+                    // We want to remove the semi-colon from the end
+                    var realContents : string = propertyContents.slice(0, propertyContents.length - 1);
+
                     if(readingPropertyBlock){
-                        this.#setTutorialProperty(propertyName, propertyContents);
+                        this.#setTutorialProperty(propertyName, realContents);
                     } else {
                         // We must be setting a step property
-                        this.#setProperty(propertyName, propertyContents, currentStep - 1);
+                        this.#setProperty(propertyName, realContents, currentStep - 1);
                     }
                 }
             } else {
@@ -154,6 +162,7 @@ export class Parser {
 
                     // The step number is placed before the curly bracket
                     var stepNum : integer = parseInt(blockBeginningParts[0]);
+                    readingStep = true;
                     
                     if(isNaN(stepNum)){
                         // Our step number must be a number

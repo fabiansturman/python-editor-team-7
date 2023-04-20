@@ -24,6 +24,7 @@ import { isV2Only } from "../common/model";
 import { generateTestTutorials } from "./content";
 import Editor, { startContent } from "./Editor";
 import { Tutorial } from "./model";
+import { Parser } from "./parser/parser";
 import TutorialCard from "./TutorialCard";
 
 const TutorialsDocumentation = () => {
@@ -371,6 +372,42 @@ const ActiveLevel = ({
         }}
         >
           Add new tutorial
+        </Button>
+        <Button
+          onClick={() => {
+            var inputObj : HTMLInputElement = document.createElement("input");
+
+            inputObj.type = "file";
+            inputObj.accept = ".nim";
+            inputObj.click();
+
+            function onInputAdded(){
+              if(inputObj.files != null){
+                if(inputObj.files.length > 0){
+                  var tutorialReader : FileReader = new FileReader();
+                  tutorialReader.readAsText(inputObj.files[0]);
+                  
+                  tutorialReader.onload = function(){var tutorialParser = new Parser();
+                    var tutorialArray : Tutorial[];
+                    try {
+                      // @ts-ignore
+                      tutorialArray = tutorialParser.parse(tutorialReader.result);
+
+                      setTutorials([...tutorials, ...tutorialArray]);
+                      setName('');
+                    } catch (err) {
+                      alert("The tutorial file contained invalid syntax. (" + err + ")")
+                      return
+                    }
+                  }
+                }
+              }
+            }
+
+            inputObj.addEventListener("change", onInputAdded);
+        }}
+        >
+          Upload tutorial file
         </Button>
       </>
       <Text pb={8} px={5}>

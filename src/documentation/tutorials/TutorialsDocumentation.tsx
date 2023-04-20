@@ -299,6 +299,10 @@ const ActiveLevel = ({
             }
           }
           } hidden={!editMode}>Delete</Button>
+          <Button onClick={() => { // Download
+            
+          }
+          } hidden={!editMode}>Download as NIM</Button>
         </SimpleGrid>
         {editMode && <>
           <Heading size="md">Change title</Heading>

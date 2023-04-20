@@ -13,7 +13,6 @@ export class Parser {
 
     // Remember: The step index parameter for this function is indexed starting at 0, unlike the syntax presented to the user
     #setProperty(propertyName : string, propertyValue : string, stepIndex : integer) {
-        console.log("Setting step " + (stepIndex + 1) + "'s " + propertyName + " to " + propertyValue);
         if(typeof this.#steps[stepIndex] == "object"){      // Check it's not null
             // We can't easily dynamically set this property, so a clunky switch case is the simplest way here
             switch(propertyName){
@@ -63,9 +62,7 @@ export class Parser {
         var i : integer = 0;
         var slugifiedName : string = this.#tutorialName.toLowerCase().replace(/\s/g, "-");
         while(i < this.#steps.length - 1){
-            console.log("Setting step " + (i + 1) + "'s slug to " + (slugifiedName + "-" + (i+1)));
             this.#steps[i].slug = {_type: "slug", current: slugifiedName + "-" + (i+1)};
-            console.log("Setting step " + (i + 2) + "'s slug to " + (slugifiedName + "-" + (i+2)));
             this.#steps[i+1].slug = {_type: "slug", current: slugifiedName + "-" + (i+2)};
 
             this.#steps[i].hasNextSection = true;
@@ -100,7 +97,6 @@ export class Parser {
             }
 
             const truncatedLine : string = fileLine.trim();      // Remove syntactically irrelevant whitespace
-            console.log("Line " + lineCount + ": " + truncatedLine);
 
             if(readingStep || readingPropertyBlock){
                 // Process this line as a property in a block or a block ending

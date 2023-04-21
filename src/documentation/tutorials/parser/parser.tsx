@@ -190,7 +190,7 @@ export class Parser {
                     };
 
                     currentStep = stepNum;
-                } else {
+                } else if(truncatedLine != "") {
                     throw new Error("Tutorial file contains line not beginning a block outside of a block at line " + lineCount);
                 }
             }

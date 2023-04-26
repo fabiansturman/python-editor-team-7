@@ -8,6 +8,7 @@
 import { Link, Stack, Text } from "@chakra-ui/layout";
 import { Button, Input, SimpleGrid, Heading, Checkbox } from "@chakra-ui/react";
 import { ReactNode, useCallback, useRef, useState } from "react";
+import { RiFileAddLine, RiFolderOpenLine } from "react-icons/ri";
 import { FormattedMessage, useIntl } from "react-intl";
 import { integer } from "vscode-languageserver-protocol";
 import AreaHeading from "../../common/AreaHeading";
@@ -145,7 +146,7 @@ const ActiveLevel = ({
           </Stack>
         )}
 
-        <SimpleGrid minChildWidth='120px' spacing={2} columns={2} ref={ref}>
+        <SimpleGrid minChildWidth='120px' spacing={2} columns={2} p={2} ref={ref}>
           <Button colorScheme='red' onClick={() => {
               if (activeTutorial.hasPrevSection)
                 onNavigate(activeTutorial.prevSection!.current)
@@ -155,7 +156,7 @@ const ActiveLevel = ({
               if (activeTutorial.hasNextSection)
                 onNavigate(activeTutorial.nextSection!.current);
             }} disabled={!activeTutorial.hasNextSection || editMode}>Next</Button>
-          <Button colorScheme='blue' onClick={() => setEditMode(!editMode)} hidden={editMode || !teacherMode}>Edit</Button>
+          <Button colorScheme='blue' onClick={() => setEditMode(!editMode)} hidden={editMode}>Edit</Button>
 
           <Button colorScheme='blue' onClick={() => {
             const tutorialSequence = tutorials.filter(t => t.name === activeTutorial.name);
@@ -383,9 +384,9 @@ const ActiveLevel = ({
             />
           ))}
       </SimpleGrid>
-      <>
+      <SimpleGrid columns={1} p={2} spacing={2}>
         <Input hidden={!teacherMode} value={name} onChange={(e) => setName(e.target.value)} placeholder='Enter new tutorial name' />
-        <Button hidden={!teacherMode}
+        <Button hidden={!teacherMode} leftIcon={<RiFileAddLine />}
           onClick={() => {
             if (name.trim(). replace(/\s{1,}/g, "-") !== '' && typeof tutorials.find(tutorial => tutorial._id.trim(). replace(/\s{1,}/g, "-") === name.trim().replace(/\s{1,}/g, "-") + "-1") == 'undefined' && typeof tutorials.find(tutorial => tutorial.name.trim(). replace(/\s{1,}/g, "-") == name.trim(). replace(/\s{1,}/g, "-")) === "undefined") {
               const newTutorial: Tutorial = {
@@ -418,7 +419,7 @@ const ActiveLevel = ({
         >
           Add new tutorial
         </Button>
-        <Button
+        <Button leftIcon={<RiFolderOpenLine />}
           onClick={() => {
             var inputObj : HTMLInputElement = document.createElement("input");
 
@@ -454,7 +455,7 @@ const ActiveLevel = ({
         >
           Upload tutorial file
         </Button>
-      </>
+      </SimpleGrid>
       
       <Checkbox px={5} color="brand.500" verticalAlign="true" type="checkbox" defaultChecked={teacherMode} onChange={handleTeacherCheckboxChange}>
         <label>Teacher mode</label>

@@ -6,7 +6,7 @@
  * Note this is based off ideas/IdeasDOcumentation.tsx
  */
 import { Link, Stack, Text } from "@chakra-ui/layout";
-import { Button, Input, SimpleGrid, Heading } from "@chakra-ui/react";
+import { Button, Input, SimpleGrid, Heading, Checkbox } from "@chakra-ui/react";
 import { ReactNode, useCallback, useRef, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { integer } from "vscode-languageserver-protocol";
@@ -29,6 +29,7 @@ import TutorialCard from "./TutorialCard";
 
 const TutorialsDocumentation = () => {
   const [tutorials, setTutorials] = useState(generateTestTutorials("en"));
+  const [teacherMode, setTeacherMode] = useState(false);    // Teacher mode determines whether editing is available or not
   const [countTutorials, setCountTutorials] = useState(tutorials.length);
   const [anchor, setAnchor] = useRouterTabSlug("tutorials");
   const direction = useAnimationDirection(anchor);
@@ -52,6 +53,8 @@ const TutorialsDocumentation = () => {
       onNavigate={handleNavigate}
       tutorials={tutorials}
       setTutorials={setTutorials}
+      teacherMode={teacherMode}
+      setTeacherMode={setTeacherMode}
       countTutorials={countTutorials}
       setCountTutorials={setCountTutorials}
       direction={direction}
@@ -66,6 +69,8 @@ interface ActiveLevelProps {
   direction: "forward" | "back" | "none";
   tutorials: Tutorial[];
   setTutorials: (tutorials: Tutorial[]) => void;
+  teacherMode : boolean;
+  setTeacherMode: (mode : boolean) => void;
   countTutorials: integer;
   setCountTutorials: (countTutorials: integer) => void;
 }
@@ -78,6 +83,8 @@ const ActiveLevel = ({
   tutorials,
   direction,
   setTutorials,
+  teacherMode,
+  setTeacherMode,
   countTutorials,
   setCountTutorials
 }: ActiveLevelProps) => {
@@ -148,7 +155,7 @@ const ActiveLevel = ({
               if (activeTutorial.hasNextSection)
                 onNavigate(activeTutorial.nextSection!.current);
             }} disabled={!activeTutorial.hasNextSection || editMode}>Next</Button>
-          <Button colorScheme='blue' onClick={() => setEditMode(!editMode)} hidden={editMode}>Edit</Button>
+          <Button colorScheme='blue' onClick={() => setEditMode(!editMode)} hidden={editMode || !teacherMode}>Edit</Button>
 
           <Button colorScheme='blue' onClick={() => {
             const tutorialSequence = tutorials.filter(t => t.name === activeTutorial.name);
@@ -343,6 +350,12 @@ const ActiveLevel = ({
       </HeadedScrollablePanel>
     );
   }
+
+  // Helper function for the teacher mode checkbox
+  const handleTeacherCheckboxChange = () => {
+    setTeacherMode(!teacherMode);
+  }
+
   //We do the following 'return' if no tutorial is open right now, i.e. we are on the 'tutorials' menu
   return (
     <HeadedScrollablePanel
@@ -371,8 +384,8 @@ const ActiveLevel = ({
           ))}
       </SimpleGrid>
       <>
-        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder='Enter new tutorial name' />
-        <Button
+        <Input hidden={!teacherMode} value={name} onChange={(e) => setName(e.target.value)} placeholder='Enter new tutorial name' />
+        <Button hidden={!teacherMode}
           onClick={() => {
             if (name.trim(). replace(/\s{1,}/g, "-") !== '' && typeof tutorials.find(tutorial => tutorial._id.trim(). replace(/\s{1,}/g, "-") === name.trim().replace(/\s{1,}/g, "-") + "-1") == 'undefined' && typeof tutorials.find(tutorial => tutorial.name.trim(). replace(/\s{1,}/g, "-") == name.trim(). replace(/\s{1,}/g, "-")) === "undefined") {
               const newTutorial: Tutorial = {
@@ -442,6 +455,10 @@ const ActiveLevel = ({
           Upload tutorial file
         </Button>
       </>
+      
+      <Checkbox px={5} color="brand.500" verticalAlign="true" type="checkbox" checked={teacherMode} onChange={handleTeacherCheckboxChange}>
+        <label>Teacher mode</label>
+      </Checkbox>
       <Text pb={8} px={5}>
         <FormattedMessage
           id="about-tutorials"

@@ -140,7 +140,7 @@ const ActiveLevel = ({
               toolkitType="tutorials"
               title={activeTutorial.name}
             >
-              <h2>{activeTutorial.stepTitle}</h2>
+              <h2><b>{activeTutorial.stepTitle}</b></h2>
               <p>{activeTutorial.content}</p>
             </DocumentationContextProvider>
           </Stack>
@@ -156,7 +156,7 @@ const ActiveLevel = ({
               if (activeTutorial.hasNextSection)
                 onNavigate(activeTutorial.nextSection!.current);
             }} disabled={!activeTutorial.hasNextSection || editMode}>Next</Button>
-          <Button colorScheme='blue' onClick={() => setEditMode(!editMode)} hidden={editMode}>Edit</Button>
+          <Button colorScheme='blue' onClick={() => setEditMode(!editMode)} hidden={editMode || !teacherMode}>Edit</Button>
 
           <Button colorScheme='blue' onClick={() => {
             const tutorialSequence = tutorials.filter(t => t.name === activeTutorial.name);
@@ -340,14 +340,14 @@ const ActiveLevel = ({
           }
           } hidden={!editMode}>Download as NIM</Button>
         </SimpleGrid>
-        {editMode && <>
+        {editMode && <SimpleGrid columns={1} p={2} spacing={2}>
           <Heading size="md">Change title</Heading>
           <Input value={tutorialName} onChange={(e) => setTutorialName(e.target.value)}  />
           <Heading size="md">Change step title</Heading>
           <Input value={stepName} onChange={(e) => setStepName(e.target.value)}  />
           <Heading size="md">Change content</Heading>
           <Editor />
-        </>} 
+        </SimpleGrid>} 
       </HeadedScrollablePanel>
     );
   }

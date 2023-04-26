@@ -456,7 +456,7 @@ const ActiveLevel = ({
         </Button>
       </>
       
-      <Checkbox px={5} color="brand.500" verticalAlign="true" type="checkbox" checked={teacherMode} onChange={handleTeacherCheckboxChange}>
+      <Checkbox px={5} color="brand.500" verticalAlign="true" type="checkbox" defaultChecked={teacherMode} onChange={handleTeacherCheckboxChange}>
         <label>Teacher mode</label>
       </Checkbox>
       <Text pb={8} px={5}>

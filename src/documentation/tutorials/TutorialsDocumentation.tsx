@@ -8,7 +8,7 @@
 import { Link, Stack, Text } from "@chakra-ui/layout";
 import { Button, Input, SimpleGrid, Heading, Checkbox } from "@chakra-ui/react";
 import { ReactNode, useCallback, useRef, useState } from "react";
-import { RiFileAddLine, RiFolderOpenLine } from "react-icons/ri";
+import { RiFileAddLine, RiFolderOpenLine, RiArrowRightLine, RiArrowLeftLine, RiEdit2Line, RiSave3Line, RiDeleteBin2Line, RiCloseLine, RiDownloadLine } from "react-icons/ri";
 import { FormattedMessage, useIntl } from "react-intl";
 import { integer } from "vscode-languageserver-protocol";
 import AreaHeading from "../../common/AreaHeading";
@@ -147,18 +147,18 @@ const ActiveLevel = ({
         )}
 
         <SimpleGrid minChildWidth='120px' spacing={2} columns={2} p={2} ref={ref}>
-          <Button colorScheme='red' onClick={() => {
+          <Button colorScheme='red' leftIcon={<RiArrowLeftLine />} onClick={() => {
               if (activeTutorial.hasPrevSection)
                 onNavigate(activeTutorial.prevSection!.current)
             }} disabled={!activeTutorial.hasPrevSection || editMode}>Back</Button>
           
-          <Button colorScheme='green' onClick={() => {
+          <Button colorScheme='green' rightIcon={<RiArrowRightLine />} onClick={() => {
               if (activeTutorial.hasNextSection)
                 onNavigate(activeTutorial.nextSection!.current);
             }} disabled={!activeTutorial.hasNextSection || editMode}>Next</Button>
-          <Button colorScheme='blue' onClick={() => setEditMode(!editMode)} hidden={editMode || !teacherMode}>Edit</Button>
+          <Button colorScheme='blue' leftIcon={<RiEdit2Line />} onClick={() => setEditMode(!editMode)} hidden={editMode || !teacherMode}>Edit</Button>
 
-          <Button colorScheme='blue' onClick={() => {
+          <Button colorScheme='blue' leftIcon={<RiSave3Line />}  onClick={() => {
             const tutorialSequence = tutorials.filter(t => t.name === activeTutorial.name);
             if (stepName.trim().replace(/\s{1,}/g, " ") !== "") {
               activeTutorial.stepTitle = stepName.trim().replace(/\s{1,}/g, " ");
@@ -177,17 +177,17 @@ const ActiveLevel = ({
 
           {//Discard button does not work as intended - content still changes
           }
-          <Button colorScheme='red' onClick={() => {
+          <Button colorScheme='red' leftIcon={<RiCloseLine />} onClick={() => {
               setTutorialName(activeTutorial.name);
               setStepName(activeTutorial.stepTitle);
               setEditMode(!editMode);
             }} hidden={!editMode}>Discard</Button>
 
 
-          <Button onClick={() => { //add before
+          <Button leftIcon={<RiFileAddLine />} onClick={() => { //add before
             setCountTutorials(countTutorials+1);
             setTutorialName(activeTutorial.name);
-            setStepName("New tutorial step");
+            setStepName("New Step");
             const newStep: Tutorial = {
               _id: activeTutorial.name. replace(/\s/g, "-").concat("-", countTutorials.toString()),
               name: activeTutorial.name,
@@ -198,8 +198,8 @@ const ActiveLevel = ({
               },
               author: "Hoa",
 
-              stepTitle: "New tutorial step",
-              content: "New tutorial content before what was there before",
+              stepTitle: "New Step",
+              content: "Add your content here!",
 
               hasHint: false,
               language: "en",
@@ -227,10 +227,10 @@ const ActiveLevel = ({
 
           }} hidden={!editMode}>Add before</Button>
 
-          <Button onClick={() => { //add after
+          <Button leftIcon={<RiFileAddLine />} onClick={() => { //add after
             setCountTutorials(countTutorials+1);
             setTutorialName(activeTutorial.name);
-            setStepName("New tutorial step");
+            setStepName("New Step");
 
             const newStep: Tutorial = {
               _id: activeTutorial.name. replace(/\s/g, "-").concat("-", countTutorials.toString()),
@@ -242,8 +242,8 @@ const ActiveLevel = ({
               },
               author: "Hoa",
 
-              stepTitle: "New tutorial step",
-              content: "New tutorial content after what was there before",
+              stepTitle: "New Step",
+              content: "Add your content here!",
 
               hasHint: false,
               language: "en",
@@ -270,7 +270,7 @@ const ActiveLevel = ({
 
           }} hidden={!editMode}>Add after</Button>
           
-          <Button onClick={() => { //delete
+          <Button leftIcon={<RiDeleteBin2Line />} onClick={() => { //delete
             setTutorials(tutorials.filter(t => t !== activeTutorial));
             if (typeof activeTutorial.prevSection !== 'undefined') { //prev section exists
               if (typeof activeTutorial.nextSection !== 'undefined') { //next section exists
@@ -308,7 +308,7 @@ const ActiveLevel = ({
             }
           }
           } hidden={!editMode}>Delete</Button>
-          <Button onClick={() => { // Download
+          <Button leftIcon={<RiDownloadLine />} onClick={() => { // Download
             const allTutorialSteps : Tutorial[] = tutorials.filter(t => t.name == activeTutorial.name);
             var outputStr : string = "TutorialProperties [\n    TutorialName: " + activeTutorial.name + ";\n    Icon: " + activeTutorial.icon.asset + ";\n    Author: " + activeTutorial.author + ";\n]\n";
             
@@ -316,7 +316,7 @@ const ActiveLevel = ({
             var startTutorialObject : Tutorial = activeTutorial;
             while(startTutorialObject.hasPrevSection){
               // @ts-ignore
-              startTutorialObject = tutorials.find(t => t.slug.current = startTutorialObject.prevSection!.current);
+              startTutorialObject = tutorials.find(t => t.slug.current === startTutorialObject.prevSection!.current);
             }
 
             var currentStepNum : integer = 1;
@@ -324,11 +324,11 @@ const ActiveLevel = ({
             var endReached = false;
             while(!endReached){
               outputStr = outputStr + currentStepNum + " {\n    StepTitle: " + currentTutorial.stepTitle + ";\n    Contents: " + currentTutorial.content + ";\n}\n";
-              if(typeof currentTutorial.nextSection == 'undefined'){
+              if(typeof currentTutorial.nextSection === 'undefined'){
                 endReached = true;
               } else {
                 // @ts-ignore
-                currentTutorial = tutorials.find(t => t.slug.current == currentTutorial.nextSection!.current);
+                currentTutorial = tutorials.find(t => t.slug.current === currentTutorial.nextSection!.current);
               }
               currentStepNum += 1;
             }
@@ -338,7 +338,7 @@ const ActiveLevel = ({
             linkElement.download = activeTutorial.name + ".nim";
             linkElement.click();
           }
-          } hidden={!editMode}>Download as NIM</Button>
+          } hidden={!editMode}>Download</Button>
         </SimpleGrid>
         {editMode && <SimpleGrid columns={1} p={2} spacing={2}>
           <Heading size="md">Change title</Heading>
@@ -385,7 +385,7 @@ const ActiveLevel = ({
           ))}
       </SimpleGrid>
       <SimpleGrid columns={1} p={2} spacing={2}>
-        <Input hidden={!teacherMode} value={name} onChange={(e) => setName(e.target.value)} placeholder='Enter new tutorial name' />
+        <Input hidden={!teacherMode} value={name} onChange={(e) => setName(e.target.value)} placeholder='Enter a new tutorial name' />
         <Button hidden={!teacherMode} leftIcon={<RiFileAddLine />}
           onClick={() => {
             if (name.trim(). replace(/\s{1,}/g, "-") !== '' && typeof tutorials.find(tutorial => tutorial._id.trim(). replace(/\s{1,}/g, "-") === name.trim().replace(/\s{1,}/g, "-") + "-1") == 'undefined' && typeof tutorials.find(tutorial => tutorial.name.trim(). replace(/\s{1,}/g, "-") == name.trim(). replace(/\s{1,}/g, "-")) === "undefined") {

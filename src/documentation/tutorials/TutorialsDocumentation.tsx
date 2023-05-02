@@ -319,13 +319,16 @@ const ActiveLevel = ({
             
             // We need to find the start of the linked list by tracing back through it
             var startTutorialObject : Tutorial = activeTutorial;
+            var beforeStart : Tutorial = activeTutorial;
             while(startTutorialObject.hasPrevSection){
+              beforeStart = startTutorialObject;
               // @ts-ignore
               startTutorialObject = tutorials.find(t => t.slug.current === startTutorialObject.prevSection!.current);
             }
 
             var currentStepNum : integer = 1;
             var currentTutorial = startTutorialObject;
+            if(typeof currentTutorial) currentTutorial = beforeStart;
             var endReached = false;
             while(!endReached){
               outputStr = outputStr + currentStepNum + " {\n    StepTitle: " + currentTutorial.stepTitle + ";\n    Contents: " + currentTutorial.content + ";\n}\n";
@@ -334,6 +337,7 @@ const ActiveLevel = ({
               } else {
                 // @ts-ignore
                 currentTutorial = tutorials.find(t => t.slug.current === currentTutorial.nextSection!.current);
+                if(typeof currentTutorial === 'undefined') endReached = true;
               }
               currentStepNum += 1;
             }

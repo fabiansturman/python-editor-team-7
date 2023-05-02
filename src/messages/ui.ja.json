@@ -479,6 +479,12 @@
       "value": "このプロジェクトに新しいPythonファイルを作成"
     }
   ],
+  "create-tutorial": [
+    {
+      "type": 0,
+      "value": "Create a new tutorial"
+    }
+  ],
   "created-file": [
     {
       "type": 1,

@@ -455,6 +455,12 @@
       "value": "在此项目中创建一份新的 Python 文件"
     }
   ],
+  "create-tutorial": [
+    {
+      "type": 0,
+      "value": "Create a new tutorial"
+    }
+  ],
   "created-file": [
     {
       "type": 0,

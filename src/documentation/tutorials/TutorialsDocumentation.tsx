@@ -26,7 +26,10 @@ import { generateTestTutorials } from "./content";
 import Editor, { startContent } from "./Editor";
 import { Tutorial } from "./model";
 import { Parser } from "./parser/parser";
+import { Dialogs, useDialogs } from "../../common/use-dialogs";
 import TutorialCard from "./TutorialCard";
+import { InputDialog } from "../../common/InputDialog";
+import NewTutorialQuestion from "./NewTutorialQuestion";
 
 const TutorialsDocumentation = () => {
   const [tutorials, setTutorials] = useState(generateTestTutorials("en"));
@@ -97,6 +100,7 @@ const ActiveLevel = ({
   ); //finds a tutorial whose slug matches our tutorialID variable
   active = activeTutorial;
   const intl = useIntl();
+  const dialogs = useDialogs();
   const headingString = intl.formatMessage({ id: "tutorials-tab" });
   const ref = useRef<HTMLDivElement>(null);
   const contentRect = useResizeObserverContentRect(ref);
@@ -106,6 +110,7 @@ const ActiveLevel = ({
   const [editMode, setEditMode] = useState(false);
   const [tutorialName, setTutorialName] = useState(activeTutorial ? activeTutorial.name : "");
   const [stepName, setStepName] = useState(activeTutorial ? activeTutorial.stepTitle : "");
+  const legacyCreateTutorialMode = false;
 
   if (activeTutorial) {
     //this runs if there is currently a tutorial that is open right now
@@ -357,6 +362,7 @@ const ActiveLevel = ({
     setTeacherMode(!teacherMode);
   }
 
+  
   //We do the following 'return' if no tutorial is open right now, i.e. we are on the 'tutorials' menu
   return (
     <HeadedScrollablePanel
@@ -385,8 +391,8 @@ const ActiveLevel = ({
           ))}
       </SimpleGrid>
       <SimpleGrid columns={1} p={2} spacing={2}>
-        <Input hidden={!teacherMode} value={name} onChange={(e) => setName(e.target.value)} placeholder='Enter a new tutorial name' />
-        <Button hidden={!teacherMode} leftIcon={<RiFileAddLine />}
+        <Input hidden={!teacherMode || !legacyCreateTutorialMode} value={name} onChange={(e) => setName(e.target.value)} placeholder='Enter a new tutorial name' />
+        <Button hidden={!teacherMode || !legacyCreateTutorialMode} leftIcon={<RiFileAddLine />}
           onClick={() => {
             if (name.trim(). replace(/\s{1,}/g, "-") !== '' && typeof tutorials.find(tutorial => tutorial._id.trim(). replace(/\s{1,}/g, "-") === name.trim().replace(/\s{1,}/g, "-") + "-1") == 'undefined' && typeof tutorials.find(tutorial => tutorial.name.trim(). replace(/\s{1,}/g, "-") == name.trim(). replace(/\s{1,}/g, "-")) === "undefined") {
               const newTutorial: Tutorial = {
@@ -415,6 +421,62 @@ const ActiveLevel = ({
               setName('');
           }
           else alert("Pick unique title")
+        }}
+        >
+          Add new tutorial (legacy)
+        </Button>
+        <Button hidden={!teacherMode} leftIcon={<RiFileAddLine />}
+          onClick={async () => {
+            const tutorialNames = new Set(tutorials.map((f) => f.name));
+            const validateName = (filename : string) => {
+              const valid = !tutorialNames.has(filename);
+              return {
+                ok: valid,
+                message: "The name of the tutorial must be unique"
+              };
+            };
+            const tutorialName = await dialogs.show<
+              string | undefined
+            >((callback) => (
+              <InputDialog
+                callback={callback}
+                header={intl.formatMessage({ id: "create-tutorial" })}
+                Body={NewTutorialQuestion}
+                initialValue=""
+                actionLabel={intl.formatMessage({ id: "create-action" })}
+                validate={validateName}
+                customFocus
+              />
+            ));
+            if(tutorialName){
+              if (tutorialName.trim(). replace(/\s{1,}/g, "-") !== '' && typeof tutorials.find(tutorial => tutorial._id.trim(). replace(/\s{1,}/g, "-") === tutorialName.trim().replace(/\s{1,}/g, "-") + "-1") == 'undefined' && typeof tutorials.find(tutorial => tutorial.name.trim(). replace(/\s{1,}/g, "-") == tutorialName.trim(). replace(/\s{1,}/g, "-")) === "undefined") {
+                const newTutorial: Tutorial = {
+                  _id: tutorialName.trim().replace(/\s{1,}/g, "-"),
+                  name: tutorialName.trim().replace(/\s{1,}/g, " "),
+                  icon: {
+                    _type: "simpleImage",
+                    asset:
+                      "image-5dd9b5a5f02940ee7f8e21d25b9b51516ae09ec8-800x399-png",
+                  },
+                  author: "Hoa",
+  
+                  stepTitle: "New tutorial step",
+                  content: "New tutorial content",
+  
+                  hasHint: false,
+                  language: "en",
+                  slug: { _type: "slug", current: tutorialName.trim().replace(/\s{1,}/g, "-")},
+  
+                  hasNextSection: false,
+                  hasPrevSection: false,
+  
+                  compatibility: ["microbitV1", "microbitV2"],
+                };
+                setTutorials([...tutorials, newTutorial]);
+                setName('');
+              }
+              else alert("Pick unique title")
+            }
         }}
         >
           Add new tutorial

@@ -463,6 +463,12 @@
       "value": "이 프로젝트 안에서 새로운 Python 파일 생성"
     }
   ],
+  "create-tutorial": [
+    {
+      "type": 0,
+      "value": "Create a new tutorial"
+    }
+  ],
   "created-file": [
     {
       "type": 1,

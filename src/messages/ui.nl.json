@@ -467,6 +467,12 @@
       "value": "Maak een nieuw Python bestand aan in dit project"
     }
   ],
+  "create-tutorial": [
+    {
+      "type": 0,
+      "value": "Create a new tutorial"
+    }
+  ],
   "created-file": [
     {
       "type": 0,

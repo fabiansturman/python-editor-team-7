@@ -17,8 +17,8 @@ export default function onChange(editorState: EditorState): void {
           x = x.concat(" ", jsonState.root.children[i].children[0].text);
         }
       }
-      active.content = x;
-
+      active.json_content = json;
+      active.content = "You should not see this!";
     }
   });
 }

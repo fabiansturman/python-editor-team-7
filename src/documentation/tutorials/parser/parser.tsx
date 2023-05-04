@@ -33,6 +33,9 @@ export class Parser {
                         _type: "simpleImage", 
                         asset: propertyValue};
                     break;
+                case "ContentsJSON":
+                    this.#steps[stepIndex].json_content = JSON.parse(propertyValue);
+                    break;
             }
         }
     }

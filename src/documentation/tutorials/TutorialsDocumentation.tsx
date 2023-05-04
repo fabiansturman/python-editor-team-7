@@ -30,6 +30,7 @@ import { Dialogs, useDialogs } from "../../common/use-dialogs";
 import TutorialCard from "./TutorialCard";
 import { InputDialog } from "../../common/InputDialog";
 import NewTutorialQuestion from "./NewTutorialQuestion";
+import { convertEditorData } from "./EditorTextRenderer";
 
 const TutorialsDocumentation = () => {
   const [tutorials, setTutorials] = useState(generateTestTutorials("en"));
@@ -80,6 +81,14 @@ interface ActiveLevelProps {
 }
 
 export var active: Tutorial | undefined;
+
+function getCorrectContent(activeTutorial : Tutorial){
+  if(typeof activeTutorial.json_content !== "undefined"){
+    return convertEditorData(activeTutorial.json_content);
+  } else {
+    return activeTutorial.content;
+  }
+}
 
 const ActiveLevel = ({
   tutorialId,
@@ -146,7 +155,7 @@ const ActiveLevel = ({
               title={activeTutorial.name}
             >
               <h2><b>{activeTutorial.stepTitle}</b></h2>
-              <p>{activeTutorial.content}</p>
+              <p>{getCorrectContent(activeTutorial)}</p>
             </DocumentationContextProvider>
           </Stack>
         )}
@@ -331,7 +340,11 @@ const ActiveLevel = ({
             if(typeof currentTutorial) currentTutorial = beforeStart;
             var endReached = false;
             while(!endReached){
-              outputStr = outputStr + currentStepNum + " {\n    StepTitle: " + currentTutorial.stepTitle + ";\n    Contents: " + currentTutorial.content + ";\n}\n";
+              outputStr = outputStr + currentStepNum + " {\n    StepTitle: " + currentTutorial.stepTitle + ";\n    Contents: " + currentTutorial.content + ";\n";
+              if(typeof currentTutorial.json_content !== "undefined"){
+                outputStr = outputStr + "    ContentsJSON: " + JSON.stringify(currentTutorial.json_content) + ";\n";
+              }
+              outputStr = outputStr + "}\n";
               if(typeof currentTutorial.nextSection === 'undefined'){
                 endReached = true;
               } else {

@@ -19,15 +19,19 @@ function Placeholder() {
 
 
 export function startContent (tutorial: Tutorial): void {
-    editorConfig.editorState = "".concat(`{"root":
-      {"children":
-        [{"children":
-          [{"detail":0,"format":0,"mode":"normal","style":"", "text":"`, tutorial.content, `","type":"text","version":1}],
-          "direction":"ltr","format":"","indent":0,"type":"paragraph","version":1
-        }],
-        "direction":"ltr","format":"","indent":0,"type":"root","version":1
-      }
-    }`);
+    if(typeof tutorial.json_content !== "undefined"){
+      editorConfig.editorState = JSON.stringify(tutorial.json_content);
+    } else {
+      editorConfig.editorState = "".concat(`{"root":
+        {"children":
+          [{"children":
+            [{"detail":0,"format":0,"mode":"normal","style":"", "text":"`, tutorial.content, `","type":"text","version":1}],
+            "direction":"ltr","format":"","indent":0,"type":"paragraph","version":1
+          }],
+          "direction":"ltr","format":"","indent":0,"type":"root","version":1
+        }
+      }`);
+    }
   }
 
 var editorConfig = {

@@ -21,6 +21,7 @@ export interface Tutorial extends HasCompatibility {
 
   stepTitle: string;//this is the name of the specific tutorial step we are currently on
   content: string;//the core content of this tutorial step
+  json_content?: any; // Lexical editor state JSON
   hasHint: boolean;//inv: 'hint' is undefined iff !hasHint
   hint? : string;//optional hint for this step of the tutorial
 
